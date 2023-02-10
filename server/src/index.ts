@@ -1,12 +1,31 @@
-import express, { Express, Request, Response } from "express";
+import express, { Express, NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
 import userRoute from "./routes/user";
 import authRoute from "./routes/auth";
-
+import { handleError } from "./error";
+import tweetRoutes from "./routes/tweet";
 dotenv.config();
 
 let app: Express = express();
+
+app.use(express.json({ limit: "10kb" }));
+app.use(cookieParser());
+app.use("/api/auth", authRoute);
+app.use("/api/users", userRoute);
+app.use("/api/tweets", tweetRoutes);
+
+app.use("*", (req: Request, res: Response, next: NextFunction) => {
+  res.redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+  return;
+});
+app.use(handleError);
+app.listen(7777, () => {
+  connect();
+  console.log("Server started on port 7777");
+});
+
 const connect = () => {
   mongoose.set("strictQuery", false);
   mongoose
@@ -18,14 +37,3 @@ const connect = () => {
       throw err;
     });
 };
-app.listen(7777, () => {
-  connect();
-  console.log("Server started on port 7777");
-});
-app.get("/", (req: Request, res: Response) => {
-  //console.log(req);
-  res.send("Hello World!");
-});
-app.use(express.json());
-app.use("/api/users", userRoute);
-app.use("/api/auth", authRoute);

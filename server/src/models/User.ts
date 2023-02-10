@@ -22,10 +22,10 @@ const UserSchema = new mongoose.Schema(
     following: { type: Array, defaultValue: [] },
     description: { type: String },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 export interface userInterface extends mongoose.Document {
-  _doc: { [x: string]: any; password: any; };
+  _doc: any;
   username: string;
   email: string;
   password: string;
@@ -36,3 +36,18 @@ export interface userInterface extends mongoose.Document {
 }
 
 export default mongoose.model<userInterface>("User", UserSchema);
+export function filterUpdateData(data: any) {
+  let { username, profilePicture, description, email } = data;
+  return { username, profilePicture, description, email };
+}
+export function filterFetchData(data: any) {
+  let { username, profilePicture, description, followers, following } = data;
+  return {
+    username,
+    profilePicture,
+    description,
+    followers,
+    following,
+    id: data._id,
+  };
+}
