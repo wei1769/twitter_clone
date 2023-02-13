@@ -15,7 +15,7 @@ router.post("/", verifyToken, createTweet);
 router.delete("/:id", verifyToken, deleteTweet);
 
 // Like or Dislike a Tweet
-router.put("/:id/like", verifyToken, likeOrDislike);
+router.put("/like/:id", verifyToken, likeOrDislike);
 
 // get all timeline tweets
 router.get("/timeline/", verifyToken, getAllTweets);

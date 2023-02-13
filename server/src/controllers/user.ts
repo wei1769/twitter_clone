@@ -49,7 +49,7 @@ export const deleteUser = async (
 ) => {
   try {
     await User.findByIdAndDelete(req.body.userId);
-    await Tweet.remove({ userId: req.body.userId });
+    await Tweet.deleteMany({ userId: req.body.userId });
     res.status(200).json("User delete");
   } catch (err) {
     return next(new serverError(500, "Error deleting user"));

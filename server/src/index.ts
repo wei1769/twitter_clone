@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import userRoute from "./routes/user";
 import authRoute from "./routes/auth";
 import { handleError } from "./error";
+import cors from "cors";
 import tweetRoutes from "./routes/tweet";
 dotenv.config();
 
@@ -12,6 +13,12 @@ let app: Express = express();
 
 app.use(express.json({ limit: "10kb" }));
 app.use(cookieParser());
+app.use(
+  cors({
+    credentials: true,
+    origin: "http://localhost:3000",
+  })
+);
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/tweets", tweetRoutes);

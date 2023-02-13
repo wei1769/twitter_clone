@@ -1,4 +1,4 @@
-import User, { userInterface } from "../models/User";
+import User, { filterFetchData, userInterface } from "../models/User";
 import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -15,7 +15,7 @@ export const signup = async (
     const hash = bcrypt.hashSync(req.body.password, salt);
     const user = new User({ ...req.body, password: hash }) as userInterface;
     await user.save();
-    const { password, ...resData } = user._doc;
+    const resData = filterFetchData(user._doc);
     const token = createToken(user._id);
     res
       .cookie("access_token", token, {
@@ -39,7 +39,7 @@ export const signin = async (
     if (!validPassword) return next(new serverError(400, "Wrong password"));
 
     const token = createToken(user._id);
-    const { password, ...resData } = user._doc;
+    const resData = filterFetchData(user._doc);
     res
       .cookie("access_token", token, { httpOnly: true })
       .status(200)
